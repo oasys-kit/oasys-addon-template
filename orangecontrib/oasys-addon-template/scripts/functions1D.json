@@ -1,0 +1,7 @@
+{"FROM":-100.0,
+  "TO":100.0,
+  "NPOINTS":500,
+  "FUNCTION_NAME":["0","sin(x)","cos(x)","x^2+x+1","Custom"],
+  "CUSTOM":"sin(x)",
+  "DUMP_TO_FILE":["1","Yes","No"],
+  "FILE_NAME":"tmp.dat"}
