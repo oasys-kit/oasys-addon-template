@@ -7,19 +7,9 @@ def read_json(json_name):
     json_dict = eval(json_text)
     json = sorted(json_dict.items(),
                   key=lambda x: json_text.index('"{}"'.format(x[0])))
-    #print(json)
-    #json_lowercase = dict((k.lower(), v) for k, v in json.iteritems())
     json_lowercase = json
     return json_lowercase
 
-
-#def create_flags(json):
-#    flags = '["True", "True", "True", "self.RB_CHOICE == 0", "self.RB_CHOICE == 1"]'
-#    return flags
-#
-#def create_labels(json):
-#    labels = '["Electron energy [GeV]","Electron current [A]","B from","Magnetic radius [m]","Magnetic field [T]"]'
-#    return labels
 
 def create_settings(json):
     settings = ""
@@ -64,14 +54,12 @@ def create_controls(json):
     controls += '        #widget buttons: compute, set defaults, help\n'
     controls += '        gui.button(box0, self, "Compute", callback=self.compute)\n'
     controls += '        gui.button(box0, self, "Defaults", callback=self.defaults)\n'
-    controls += '        gui.button(box0, self, "Help", callback=self.help1)\n'
+    controls += '        gui.button(box0, self, "Help", callback=self.get_doc)\n'
     controls += '        self.process_showers()\n'
 
 
     controls += '        box = gui.widgetBox(self.controlArea, " ",orientation="vertical") \n'
     idx = -1
-    #controls += '        box = gui.widgetBox(self.controlArea, "Set parameters") \n'
-    #controls += '        box = gui.widgetBox(self.controlArea, " ") \n'
     controls += '        \n'
     controls += '        \n'
     controls += '        idx = -1 \n'
@@ -88,9 +76,7 @@ def create_controls(json):
         else:
             controls += line_edit_templates[type(value)].format(name=name)
 
-
         controls += '        self.show_at(self.unitFlags()[idx], box1) \n'
-
 
     return controls
 
@@ -99,13 +85,11 @@ def main():
     json_name = sys.argv[1]
     base = os.path.splitext(json_name)[0]
     py_name =  base + ".py"
-    calc_name = "xoppy_calc_template.py"
+
     if os.path.exists(py_name):
         print("file overwritten: "+py_name+"\n")
     else:
         print("file written: "+py_name+"\n")
-    if os.path.exists(calc_name):
-        print("appended to file: "+calc_name+"\n")
 
     json = read_json(json_name)
     widget_name = base
@@ -118,16 +102,11 @@ def main():
     f = open(json_name+'.ext')
     lines = f.readlines()
     f.close()
-    #print(lines[0])
-    #flags = create_flags(json)
-    #labels = create_labels(json)
-    labels = lines[0] #["Electron energy [GeV]","Electron current [A]","B from","Magnetic radius [m]","Magnetic field [T]"]
-    flags = lines[1] #["True", "True", "True", "self.RB_CHOICE == 0", "self.RB_CHOICE == 1"]
-    mynames = lines[2]
-    flagsold = lines[3]
+
+    labels = lines[0]
+    flags = lines[1]
     open(py_name, "wt").write(widget_template.format_map(vars()))
-    #open(py_name, "wt").write(widget_template)
-    open(calc_name, "a").write(calc_template.format_map(vars()))
+
 
 
 control_template = """        gui.{}(box1, self, "{{name}}",
@@ -157,41 +136,33 @@ list_template = control_template.format("comboBox") + """,
 widget_template = """import sys
 import numpy as np
 from PyQt4.QtGui import QIntValidator, QDoubleValidator, QApplication, QSizePolicy
-from PyMca5.PyMcaIO import specfilewrapper as specfile
+# from PyMca5.PyMcaIO import specfilewrapper as specfile
 from orangewidget import gui
 from orangewidget.settings import Setting
 from oasys.widgets import widget
-
-# try:
-#     from orangecontrib.xoppy.util.xoppy_calc import xoppy_doc
-# except ImportError:
-#     print("Error importing: xoppy_doc")
-#     raise
-
-# try:
-#     from orangecontrib.xoppy.util.xoppy_calc import xoppy_calc_{widget_class_name}
-# except ImportError:
-#     print("compute pressed.")
-#     print("Error importing: xoppy_calc_{widget_class_name}")
-#     raise
+import orangecanvas.resources as resources
+import sys,os
 
 class OW{widget_class_name}(widget.OWWidget):
     name = "{widget_name}"
     id = "orange.widgets.data{widget_id_name}"
-    description = "xoppy application to compute..."
-    icon = "icons/xoppy_{widget_class_name}.png"
+    description = "Application to compute..."
+    icon = "icons/{widget_class_name}.png"
     author = "create_widget.py"
     maintainer_email = "srio@esrf.eu"
     priority = 10
     category = ""
-    keywords = ["xoppy", "{widget_class_name}"]
-    outputs = [{{"name": "xoppy_data",
+    keywords = ["oasys-addon-template", "{widget_class_name}"]
+    outputs = [{{"name": "oasys-addon-template-data",
                 "type": np.ndarray,
-                "doc": ""}},
-               {{"name": "xoppy_specfile",
-                "type": str,
-                "doc": ""}}]
+                "doc": "transfer numpy arrays"}},
+               # another possible output
+               # {{"name": "oasys-addon-template-file",
+               #  "type": str,
+               #  "doc": "transfer a file"}},
+                ]
 
+    # widget input (if needed)
     #inputs = [{{"name": "Name",
     #           "type": type,
     #           "handler": None,
@@ -213,44 +184,43 @@ class OW{widget_class_name}(widget.OWWidget):
     def unitFlags(self):
          return {flags}
 
-    #def unitNames(self):
-    #     return {mynames}
-
     def compute(self):
-        fileName = xoppy_calc_{widget_class_name}({calc_args})
-        #send specfile
+        dataArray = OW{widget_class_name}.calculate_external_{widget_class_name}({calc_args})
 
-        if fileName == None:
-            print("Nothing to send")
-        else:
-            self.send("xoppy_specfile",fileName)
-            sf = specfile.Specfile(fileName)
-            if sf.scanno() == 1:
-                #load spec file with one scan, # is comment
-                print("Loading file:  ",fileName)
-                out = np.loadtxt(fileName)
-                print("data shape: ",out.shape)
-                #get labels
-                txt = open(fileName).readlines()
-                tmp = [ line.find("#L") for line in txt]
-                itmp = np.where(np.array(tmp) != (-1))
-                labels = txt[itmp[0]].replace("#L ","").split("  ")
-                print("data labels: ",labels)
-                self.send("xoppy_data",out)
-            else:
-                print("File %s contains %d scans. Cannot send it as xoppy_table"%(fileName,sf.scanno()))
+        # if fileName == None:
+        #     print("No file to send")
+        # else:
+        #     self.send("oasys-addon-template-file",fileName)
+
+        self.send("oasys-addon-template-data",dataArray)
+
 
     def defaults(self):
          self.resetSettings()
          self.compute()
          return
 
-    def help1(self):
+    def get_doc(self):
         print("help pressed.")
-        xoppy_doc('{widget_class_name}')
+        home_doc = resources.package_dirname("orangecontrib.oasys-addon-template") + "/doc_files/"
+        filename1 = os.path.join(home_doc,'{widget_class_name}'+'.txt')
+        print("Opening file %s"%filename1)
+        if sys.platform == 'darwin':
+            command = "open -a TextEdit "+filename1+" &"
+        elif sys.platform == 'linux':
+            command = "gedit "+filename1+" &"
+        os.system(command)
 
 
-
+    #
+    # this is the calculation method to be implemented by the user
+    # It is defined as static method to get all inputs from the arguments so it
+    # can easily moved outside the class
+    #
+    @staticmethod
+    def calculate_external_{widget_class_name}({calc_args_default}):
+        print("Inside calculate_external_{widget_class_name}. ")
+        return(None)
 
 
 if __name__ == "__main__":
@@ -259,13 +229,6 @@ if __name__ == "__main__":
     w.show()
     app.exec()
     w.saveSettings()
-"""
-calc_template = """
-
-
-def xoppy_calc_{widget_class_name}({calc_args_default}):
-    print("Inside xoppy_calc_{widget_class_name}. ")
-    return(None)
 """
 
 main()
