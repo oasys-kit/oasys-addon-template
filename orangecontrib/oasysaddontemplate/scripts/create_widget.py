@@ -152,12 +152,12 @@ class OW{widget_class_name}(widget.OWWidget):
     maintainer_email = "srio@esrf.eu"
     priority = 10
     category = ""
-    keywords = ["oasys-addon-template", "{widget_class_name}"]
-    outputs = [{{"name": "oasys-addon-template-data",
+    keywords = ["oasysaddontemplate", "{widget_class_name}"]
+    outputs = [{{"name": "oasysaddontemplate-data",
                 "type": np.ndarray,
                 "doc": "transfer numpy arrays"}},
                # another possible output
-               # {{"name": "oasys-addon-template-file",
+               # {{"name": "oasysaddontemplate-file",
                #  "type": str,
                #  "doc": "transfer a file"}},
                 ]
@@ -190,9 +190,9 @@ class OW{widget_class_name}(widget.OWWidget):
         # if fileName == None:
         #     print("No file to send")
         # else:
-        #     self.send("oasys-addon-template-file",fileName)
+        #     self.send("oasysaddontemplate-file",fileName)
 
-        self.send("oasys-addon-template-data",dataArray)
+        self.send("oasysaddontemplate-data",dataArray)
 
 
     def defaults(self):
@@ -202,7 +202,7 @@ class OW{widget_class_name}(widget.OWWidget):
 
     def get_doc(self):
         print("help pressed.")
-        home_doc = resources.package_dirname("orangecontrib.oasys-addon-template") + "/doc_files/"
+        home_doc = resources.package_dirname("orangecontrib.oasysaddontemplate") + "/doc_files/"
         filename1 = os.path.join(home_doc,'{widget_class_name}'+'.txt')
         print("Opening file %s"%filename1)
         if sys.platform == 'darwin':

@@ -8,7 +8,7 @@ DESCRIPTION = "widgets1D."
 
 BACKGROUND = "#C3F3F3"
 
-ICON = "icons/widgets1D.svg"
+ICON = "icons/xoppy_2.png"
 
 PRIORITY = 403
 
