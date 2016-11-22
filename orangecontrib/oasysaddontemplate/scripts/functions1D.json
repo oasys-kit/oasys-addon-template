@@ -2,6 +2,6 @@
   "TO":100.0,
   "NPOINTS":500,
   "FUNCTION_NAME":["3","sin(x)","cos(x)","x^2+x+1","Custom"],
-  "CUSTOM":"sin(x)",
+  "CUSTOM":"np.sin(x)",
   "DUMP_TO_FILE":["0","Yes","No"],
   "FILE_NAME":"tmp.dat"}

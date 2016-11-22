@@ -17,12 +17,12 @@ class OWfunctions1D(widget.OWWidget):
     maintainer_email = "srio@esrf.eu"
     priority = 10
     category = ""
-    keywords = ["oasys-addon-template", "functions1D"]
-    outputs = [{"name": "oasys-addon-template-data",
+    keywords = ["oasysaddontemplate", "functions1D"]
+    outputs = [{"name": "oasysaddontemplate-data",
                 "type": np.ndarray,
                 "doc": "transfer numpy arrays"},
                # another possible output
-               # {"name": "oasys-addon-template-file",
+               # {"name": "oasysaddontemplate-file",
                #  "type": str,
                #  "doc": "transfer a file"},
                 ]
@@ -39,7 +39,7 @@ class OWfunctions1D(widget.OWWidget):
     TO = Setting(100.0)
     NPOINTS = Setting(500)
     FUNCTION_NAME = Setting(3)
-    CUSTOM = Setting("sin(x)")
+    CUSTOM = Setting("np.sin(x)")
     DUMP_TO_FILE = Setting(0)
     FILE_NAME = Setting("tmp.dat")
 
@@ -130,9 +130,9 @@ class OWfunctions1D(widget.OWWidget):
         # if fileName == None:
         #     print("No file to send")
         # else:
-        #     self.send("oasys-addon-template-file",fileName)
+        #     self.send("oasysaddontemplate-file",fileName)
 
-        self.send("oasys-addon-template-data",dataArray)
+        self.send("oasysaddontemplate-data",dataArray)
 
 
     def defaults(self):
@@ -160,7 +160,19 @@ class OWfunctions1D(widget.OWWidget):
     @staticmethod
     def calculate_external_functions1D(FROM=-100.0,TO=100.0,NPOINTS=500,FUNCTION_NAME=3,CUSTOM="sin(x)",DUMP_TO_FILE=0,FILE_NAME="tmp.dat"):
         print("Inside calculate_external_functions1D. ")
-        return(None)
+        x = np.linspace(FROM,TO,NPOINTS)
+        if FUNCTION_NAME == 0:
+            y = np.sin(x)
+        elif FUNCTION_NAME == 1:
+            y = np.cos(x)
+        elif FUNCTION_NAME == 2:
+            y = x*x + x + 1
+        elif FUNCTION_NAME == 3:
+            y = eval(CUSTOM)
+        else:
+            raise Exception("FUNCTION_NAME is not valid")
+
+        return np.vstack((x,y)).copy()
 
 
 if __name__ == "__main__":
