@@ -34,7 +34,7 @@ and start Oasys:
 
 you should get the new package. 
 
-Then start replacing oasysaddontemplate by your Oasys project nane and
-populate it with your applications. 
+Then start replacing oasysaddontemplate by your Oasys project name and
+populate it with your applications.  
 
 
