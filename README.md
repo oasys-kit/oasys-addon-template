@@ -1,8 +1,8 @@
 # oasys-addon-template
 
-This project is a template for creating add-ons in oasys. 
+This project is a template for creating add-ons in OASYS (OrAnge SYnchrotron Suite). 
 
-OASYS (OrAnge SYnchrotron Suite) is an open-source Graphical Environment
+OASYS (https://www.elettra.trieste.it/oasys.html) is an open-source Graphical Environment
 for optic simulation softwares used in synchrotron facilities, based on
 Orange (http://orange.biolab.si/)
 
@@ -13,19 +13,24 @@ https://github.com/srio/oasys-installation-scripts/wiki
 
 Then activate the Oasys virtual environment: 
 
-source /users/me/OASYS\_VE/bin/activate
+```
+source /users/me/OASYS_VE/bin/activate
 
-cd /users/me/OASYS\_VE
+cd /users/me/OASYS_VE
+```
 
 and then unpack this project, e.g., 
-
+```
 git clone  https://github.com/srio/oasys-addon-template oasysaddontemplate
 
 cd oasysaddontemplate
-python develop
+python setup.py develop
+```
 
 and start Oasys: 
-/users/me/start\_oasys.sh
+```
+/users/me/start_oasys.sh
+```
 
 you should get the new package. 
 
