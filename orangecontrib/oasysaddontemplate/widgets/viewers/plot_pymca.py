@@ -25,8 +25,7 @@ class OWPlotPymca(widget.OWWidget):
         super().__init__()
         self.figure_canvas = None
 
-    def do_plot(self,custom
-        _data):
+    def do_plot(self,custom_data):
         x = custom_data[0,:]
         y = custom_data[-1,:]
         x.shape = -1
