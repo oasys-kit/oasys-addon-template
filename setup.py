@@ -10,20 +10,20 @@ NAME = 'oasysaddontemplate'
 VERSION = '1.0'
 ISRELEASED = False
 
-DESCRIPTION = 'oasysaddontemplate: Template for creating an oasys addon'
+DESCRIPTION = 'oasysaddontemplate: Template for Oasys Addon'
 README_FILE = os.path.join(os.path.dirname(__file__), 'README.txt')
 LONG_DESCRIPTION = open(README_FILE).read()
-AUTHOR = 'Your Name'
-AUTHOR_EMAIL = 'name@company.ext'
+AUTHOR = 'Your Name Here'
+AUTHOR_EMAIL = 'yourname@instutution.ext'
 URL = 'http://orange.biolab.si/'
-DOWNLOAD_URL = 'http://github.com/srio/oasysaddontemplate'
+DOWNLOAD_URL = 'http://github.com/srio/oasys-addon-template'
 LICENSE = 'MIT'
 
 KEYWORDS = (
+    'application',
+    'customer',
     'Oasys',
     'Orange',
-    'Template',
-    'addon',
 )
 
 CLASSIFIERS = (
@@ -43,12 +43,8 @@ SETUP_REQUIRES = (
                   )
 
 INSTALL_REQUIRES = (
-                'setuptools',
-                'numpy',
-                'matplotlib==1.4.3',
-                'orange-widget-core>=0.0.2',
-                'oasys>=0.1.23',
-                )
+                    'setuptools',
+                   )
 
 if len({'develop', 'release', 'bdist_egg', 'bdist_rpm', 'bdist_wininst',
         'install_egg_info', 'build_sphinx', 'egg_info', 'easy_install',
@@ -68,17 +64,20 @@ PACKAGES = find_packages(
                          exclude = ('*.tests', '*.tests.*', 'tests.*', 'tests'),
                          )
 
-PACKAGE_DATA = {"orangecontrib.oasysaddontemplate.widgets.widgets1D":["icons/*.png", "icons/*.jpg"], "orangecontrib.oasysaddontemplate.widgets.plotTools":["icons/*.png", "icons/*.jpg"], }
+PACKAGE_DATA = {"orangecontrib.oasysaddontemplate.widgets.viewers":["icons/*.png", "icons/*.jpg"],
+                "orangecontrib.oasysaddontemplate.widgets.applications":["icons/*.png", "icons/*.jpg"],
+}
 
 
 NAMESPACE_PACAKGES = ["orangecontrib","orangecontrib.oasysaddontemplate", "orangecontrib.oasysaddontemplate.widgets"]
 
 
-ENTRY_POINTS = { 
-	'oasys.addons' : ("oasysaddontemplate = orangecontrib.oasysaddontemplate", ),
-	'oasys.widgets' : ( 
-		"oasysaddontemplate widgets1D = orangecontrib.oasysaddontemplates.widgets.widgets1D", 
-		"oasysaddontemplate plotTools = orangecontrib.oasysaddontemplates.widgets.plotTools",),
+ENTRY_POINTS = {
+    'oasys.addons' : ("OasysAddonTemplate = orangecontrib.oasysaddontemplate", ),
+    'oasys.widgets' : (
+        "OasysAddonTemplate Applications = orangecontrib.oasysaddontemplate.widgets.applications",
+        "OasysAddonTemplate Viewers = orangecontrib.oasysaddontemplate.widgets.viewers",
+    ),
 }
 
 if __name__ == '__main__':
@@ -96,8 +95,11 @@ if __name__ == '__main__':
           classifiers = CLASSIFIERS,
           packages = PACKAGES,
           package_data = PACKAGE_DATA,
+          #py_modules = PY_MODULES,
           setup_requires = SETUP_REQUIRES,
           install_requires = INSTALL_REQUIRES,
+          #extras_require = EXTRAS_REQUIRE,
+          #dependency_links = DEPENDENCY_LINKS,
           entry_points = ENTRY_POINTS,
           namespace_packages=NAMESPACE_PACAKGES,
           include_package_data = True,
