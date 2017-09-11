@@ -1,18 +1,19 @@
-from PyQt4 import QtGui
-from orangewidget import widget, gui
+from PyQt5 import QtWidgets
+from orangewidget import gui
+from oasys.widgets import widget, gui as oasysgui
 import numpy as np
 
-from PyMca5.PyMcaGui.plotting.PlotWindow import PlotWindow
+from silx.gui.plot.PlotWindow import PlotWindow
 
 
-class OWPlotPymca(widget.OWWidget):
-    name = "plot using PyMca"
-    id = "orange.widgets.data.widget_name"
+class OWPlotSilx(widget.OWWidget):
+    name = "Plot using Silx"
+    id = "OWPlotSilx"
     description = ""
     icon = "icons/Unknown.svg"
     author = ""
     maintainer_email = ""
-    priority = 10
+    priority = 2
     category = ""
     keywords = ["list", "of", "keywords"]
     inputs = [{"name": "oasysaddontemplate-data",
@@ -23,9 +24,12 @@ class OWPlotPymca(widget.OWWidget):
 
     def __init__(self):
         super().__init__()
+
+        gui.label(self.controlArea, self, "PUT YOUR INPUT FORM HERE")
+
         self.figure_canvas = None
 
-    def do_plot(self,custom_data):
+    def do_plot(self, custom_data):
         x = custom_data[0,:]
         y = custom_data[-1,:]
         x.shape = -1
@@ -43,17 +47,19 @@ class OWPlotPymca(widget.OWWidget):
         plot.setGraphYLabel(ytitle)
         plot.setDrawModeEnabled(True, 'rectangle')
         plot.setZoomModeEnabled(True)
+
         if self.figure_canvas is not None:
             self.mainArea.layout().removeWidget(self.figure_canvas)
 
         self.figure_canvas = plot
+
         self.mainArea.layout().addWidget(self.figure_canvas)
 
-
+        gui.rubber(self.mainArea)
 
 if __name__ == '__main__':
-    app = QtGui.QApplication([])
-    ow = OWPlotPymca()
+    app = QtWidgets.QApplication([])
+    ow = OWPlotSilx()
     a = np.array([
         [  8.47091837e+04,  8.57285714e+04,   8.67479592e+04, 8.77673469e+04,] ,
         [  1.16210756e+12,  1.10833975e+12,   1.05700892e+12, 1.00800805e+12]

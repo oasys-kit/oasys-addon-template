@@ -1,14 +1,15 @@
 import sys
 import numpy as np
-from PyQt4.QtGui import QIntValidator, QDoubleValidator, QApplication, QSizePolicy
-# from PyMca5.PyMcaIO import specfilewrapper as specfile
+from PyQt5.QtGui import QIntValidator, QDoubleValidator
+from PyQt5.QtWidgets import QApplication, QSizePolicy
 from orangewidget import gui
 from orangewidget.settings import Setting
-from oasys.widgets import widget
+from orangewidget import widget
+from oasys.widgets import widget as oasyswidget, gui as oasysgui
 import orangecanvas.resources as resources
 import sys,os
 
-class OWfunctions1D(widget.OWWidget):
+class OWfunctions1D(oasyswidget.OWWidget):
     name = "functions1D"
     id = "orange.widgets.datafunctions1D"
     description = "Application to compute..."
@@ -45,7 +46,11 @@ class OWfunctions1D(widget.OWWidget):
 
 
     def __init__(self):
-        super().__init__()
+        super().__init__(self)
+
+        self.runaction = widget.OWAction("Compute", self)
+        self.runaction.triggered.connect(self.compute)
+        self.addAction(self.runaction)
 
         box0 = gui.widgetBox(self.controlArea, " ",orientation="horizontal") 
         #widget buttons: compute, set defaults, help
@@ -158,21 +163,16 @@ class OWfunctions1D(widget.OWWidget):
     # can easily moved outside the class
     #
     @staticmethod
-    def calculate_external_functions1D(FROM=-100.0,TO=100.0,NPOINTS=500,FUNCTION_NAME=3,CUSTOM="sin(x)",DUMP_TO_FILE=0,FILE_NAME="tmp.dat"):
+    def calculate_external_functions1D(FROM=-100.0,TO=100.0,NPOINTS=500,FUNCTION_NAME=3,CUSTOM="np.sin(x)",DUMP_TO_FILE=0,FILE_NAME="tmp.dat"):
         print("Inside calculate_external_functions1D. ")
-        x = np.linspace(FROM,TO,NPOINTS)
-        if FUNCTION_NAME == 0:
-            y = np.sin(x)
-        elif FUNCTION_NAME == 1:
-            y = np.cos(x)
-        elif FUNCTION_NAME == 2:
-            y = x*x + x + 1
-        elif FUNCTION_NAME == 3:
-            y = eval(CUSTOM)
-        else:
-            raise Exception("FUNCTION_NAME is not valid")
 
-        return np.vstack((x,y)).copy()
+        # A MERE EXAMPLE
+        a = np.array([
+        [  8.47091837e+04,  8.57285714e+04,   8.67479592e+04, 8.77673469e+04,] ,
+        [  1.16210756e+12,  1.10833975e+12,   1.05700892e+12, 1.00800805e+12]
+        ])
+
+        return a
 
 
 if __name__ == "__main__":

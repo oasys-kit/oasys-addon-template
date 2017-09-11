@@ -135,15 +135,16 @@ list_template = control_template.format("comboBox") + """,
 
 widget_template = """import sys
 import numpy as np
-from PyQt4.QtGui import QIntValidator, QDoubleValidator, QApplication, QSizePolicy
-# from PyMca5.PyMcaIO import specfilewrapper as specfile
+from PyQt5.QtGui import QIntValidator, QDoubleValidator
+from PyQt5.QtWidgets import QApplication, QSizePolicy
 from orangewidget import gui
 from orangewidget.settings import Setting
-from oasys.widgets import widget
+from orangewidget import widget
+from oasys.widgets import widget as oasyswidget, gui as oasysgui
 import orangecanvas.resources as resources
 import sys,os
 
-class OW{widget_class_name}(widget.OWWidget):
+class OW{widget_class_name}(oasyswidget.OWWidget):
     name = "{widget_name}"
     id = "orange.widgets.data{widget_id_name}"
     description = "Application to compute..."
@@ -173,7 +174,11 @@ class OW{widget_class_name}(widget.OWWidget):
 {settings}
 
     def __init__(self):
-        super().__init__()
+        super().__init__(self)
+
+        self.runaction = widget.OWAction("Compute", self)
+        self.runaction.triggered.connect(self.compute)
+        self.addAction(self.runaction)
 
 {controls}
         gui.rubber(self.controlArea)
@@ -220,7 +225,14 @@ class OW{widget_class_name}(widget.OWWidget):
     @staticmethod
     def calculate_external_{widget_class_name}({calc_args_default}):
         print("Inside calculate_external_{widget_class_name}. ")
-        return(None)
+
+        # A MERE EXAMPLE
+        a = np.array([
+        [  8.47091837e+04,  8.57285714e+04,   8.67479592e+04, 8.77673469e+04,] ,
+        [  1.16210756e+12,  1.10833975e+12,   1.05700892e+12, 1.00800805e+12]
+        ])
+
+        return a
 
 
 if __name__ == "__main__":
